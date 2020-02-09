@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, HostListener, ElementRef } from '@angular/core';
 
-export type Size = 'xs' | 's' | 'm' | 'l' | 'xl';
+export type Size = 'mini' | 'xs' | 's' | 'm' | 'l' | 'xl';
 
 export enum SizeConverter {
-  xs = 100, s = 150, m = 200, l = 250, xl = 300
+  mini = 40, xs = 100, s = 150, m = 200, l = 250, xl = 300
 }
 
 @Component({
@@ -20,7 +20,7 @@ export class NgxMatCircleCounterComponent implements OnInit {
   @Input() textColor = '';
   @Input() speed = 10;
   @Input() value = 100;
-  @Input() mode: 'viewport'|'pageinit' = 'pageinit';
+  @Input() mode: 'viewport' | 'pageinit' = 'pageinit';
   @Input() thickness = 10;
   public count = 0;
   public percent = 0;
@@ -29,14 +29,14 @@ export class NgxMatCircleCounterComponent implements OnInit {
   private animationHasRun: boolean;
   @HostListener('window:scroll', ['$event'])
   @HostListener('window:resize', ['$event'])
-    onWindowChange = () => {
-      if (this.mode !== 'viewport') {
-        return;
-      }
-      if (!this.animationHasRun && this.isElementInViewport()) {
-        this.startAnimation();
-      }
+  onWindowChange = () => {
+    if (this.mode !== 'viewport') {
+      return;
     }
+    if (!this.animationHasRun && this.isElementInViewport()) {
+      this.startAnimation();
+    }
+  }
 
   constructor(private hostElement: ElementRef) { }
 
@@ -51,10 +51,16 @@ export class NgxMatCircleCounterComponent implements OnInit {
 
   private startAnimation() {
     this.animationHasRun = true;
+    this.count = this.start;
     // Start
     const interval = setInterval(async () => {
-      this.count++;
-      this.percent = +((this.count / this.value) * 100).toFixed(0);
+      if (this.start > this.value) {
+        this.count--;
+        this.percent = Math.abs(+(((this.start - this.count) / (this.start - this.value)) * 100).toFixed(0));
+      } else {
+        this.count++;
+        this.percent = Math.abs(+(((this.count - this.start) / (this.value - this.start)) * 100).toFixed(0));
+      }
       // End
       if (this.count === this.value) {
         // console.log('End');
