@@ -29,7 +29,7 @@ export class NgxMatCircleCounterComponent implements OnInit {
   private animationHasRun: boolean;
   @HostListener('window:scroll', ['$event'])
   @HostListener('window:resize', ['$event'])
-  onWindowChange = () => {
+  onWindowChange = (event) => {
     if (this.mode !== 'viewport') {
       return;
     }
